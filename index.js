@@ -53,12 +53,13 @@ async function startApp(port, origin, app) {
   });
   app.get("/:route", async (req, res) => {
     const uri = url.resolve(origin, req.params.route);
-    if (check(uri)) {
+    if (!check(uri)) {
       const response = await axios.get(url.resolve(origin, req.params.route));
-      res.set(response.data);
+      res.set({ "X-Cache": "MISS" });
       set(uri, response.data);
       res.send(response.data);
     } else {
+      res.set({ "X-Cache": "HIT" });
       res.send(get(uri));
     }
   });

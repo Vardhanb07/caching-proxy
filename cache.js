@@ -19,10 +19,7 @@ function set(origin, data) {
 }
 
 function check(origin) {
-  if (get(origin)) {
-    return false;
-  }
-  return true;
+  return get(origin) !== undefined;
 }
 
 module.exports = { get, set, check };
