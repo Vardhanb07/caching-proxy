@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-import { program } from "commander";
-import chalk from "chalk";
-import systeminformation from "systeminformation";
-import axios from "axios";
-import express from "express";
-import url from "node:url";
+const { program } = require("commander");
+const systeminformation = require("systeminformation");
+const axios = require("axios");
+const express = require("express");
+const url = require("node:url");
+const { get, set, check } = require("./cache");
+const pc = require("picocolors");
 
 const app = express();
 
@@ -38,11 +39,12 @@ function checkURL(origin) {
 async function startApp(port, origin, app) {
   const isPortAvailable = await canPortbeUsed(port);
   if (!isPortAvailable) {
-    console.log(chalk.red("port not available, try another"));
+    console.log(pc.red("port not available, try another"));
     process.exit(1);
   }
   if (!checkURL(origin)) {
-    console.log(chalk.red("url format is incorrect"));
+    console.log(pc.red("url format is incorrect"));
+    process.exit(1);
   }
   const response = await axios.get(origin);
   app.get("/", (req, res) => {
@@ -50,8 +52,15 @@ async function startApp(port, origin, app) {
     res.send(response.data);
   });
   app.get("/:route", async (req, res) => {
-    const response = await axios.get(url.resolve(origin, req.params.route));
-    res.send(response.data);
+    const uri = url.resolve(origin, req.params.route);
+    if (check(uri)) {
+      const response = await axios.get(url.resolve(origin, req.params.route));
+      res.set(response.data);
+      set(uri, response.data);
+      res.send(response.data);
+    } else {
+      res.send(get(uri));
+    }
   });
   app.listen(port);
 }
@@ -63,7 +72,7 @@ program
   .action((options) => {
     startApp(options.port, options.origin, app)
       .then(() =>
-        console.log(chalk.green(`localhost: http://localhost:${options.port}`))
+        console.log(pc.green(`localhost: http://localhost:${options.port}`))
       )
       .catch((e) => console.log(e));
   });
