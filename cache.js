@@ -1,6 +1,5 @@
-const nodeCache = require("node-cache");
-
-const cache = new nodeCache();
+const fs = require("node:fs");
+const path = require("node:path");
 
 /*
   key: origin
@@ -10,12 +9,25 @@ const cache = new nodeCache();
     check(): checks if the data is present by comparing the key
 */
 
+const cacheData = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, "cache.json"))
+);
+
 function get(origin) {
-  return cache.get(origin);
+  return cacheData[origin];
 }
 
 function set(origin, data) {
-  cache.set(origin, data, 2592000);
+  cacheData[origin] = data;
+  fs.writeFile(
+    path.resolve(__dirname, "cache.json"),
+    JSON.stringify(cacheData),
+    (err) => {
+      if (err) {
+        throw err;
+      }
+    }
+  );
 }
 
 function check(origin) {

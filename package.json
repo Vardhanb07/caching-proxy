@@ -23,7 +23,6 @@
     "axios": "^1.12.2",
     "commander": "^14.0.1",
     "express": "^5.1.0",
-    "node-cache": "^3.0.0",
     "picocolors": "^1.1.1",
     "systeminformation": "^5.27.10"
   }
