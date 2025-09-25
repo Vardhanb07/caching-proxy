@@ -6,9 +6,6 @@
   "bin": {
     "caching-proxy": "./index.js"
   },
-  "scripts": {
-    "dev": "node --watch server.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Vardhanb07/caching-proxy.git"
@@ -23,9 +20,11 @@
   "homepage": "https://github.com/Vardhanb07/caching-proxy#readme",
   "dependencies": {
     "@inquirer/prompts": "^7.8.6",
+    "axios": "^1.12.2",
     "chalk": "^5.6.2",
     "commander": "^14.0.1",
     "express": "^5.1.0",
-    "node-cache": "^3.0.0"
+    "node-cache": "^3.0.0",
+    "systeminformation": "^5.27.10"
   }
 }
