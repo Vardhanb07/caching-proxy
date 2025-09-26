@@ -34,4 +34,16 @@ function check(origin) {
   return get(origin) !== undefined;
 }
 
-module.exports = { get, set, check };
+function clear() {
+  fs.writeFileSync(
+    path.resolve(__dirname, "cache.json"),
+    JSON.stringify({}),
+    (err) => {
+      if (err) {
+        throw err;
+      }
+    }
+  );
+}
+
+module.exports = { get, set, check, clear };
